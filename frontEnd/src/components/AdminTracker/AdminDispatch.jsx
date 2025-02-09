@@ -40,7 +40,7 @@ function AdminDispatch() {
 
   return (
     <div className='bg-black min-h-screen'>
-    <div className="text-white p-4 grid gap-4 grid-cols-1 grid-cols-2 grid-rows-1">
+      <div className="text-white p-4 grid gap-4 grid-cols-1 md:grid-cols-2">
         {orderGroup.map((order) => (
             <SingleAdminItem
                 key={order.id}
@@ -49,10 +49,8 @@ function AdminDispatch() {
                 onStatusChange={fetchPendingData}
             />
         ))}
+      </div>
     </div>
-</div>
-
-
   );
 }
 
