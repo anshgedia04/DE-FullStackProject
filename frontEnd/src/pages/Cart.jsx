@@ -10,8 +10,6 @@ import { orderCreate } from "../services/orderService/orderSend";
 
 const Cart = () => {
   const { cart } = useSelector((state) => state);
-  console.log("Printing Cart");
-  console.log(cart);
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {

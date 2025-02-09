@@ -34,7 +34,7 @@ function AdminPending() {
   }
 
   if (!orderGroup || orderGroup.length === 0) {
-    return <div className="text-center mt-4">No delivered orders found.</div>;
+    return <div className="text-center mt-4">No pending orders found.</div>;
   }
 
   return (

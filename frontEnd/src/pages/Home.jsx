@@ -58,7 +58,7 @@ const Home = () => {
                 autoPlay
                 muted
                 playsInline
-                loading="lazy"
+                
                 onEnded={(e) => {
                   e.target.style.display = 'none';
                   const nextVideo = e.target.nextElementSibling;
@@ -68,21 +68,7 @@ const Home = () => {
                   }
                 }}
               />
-              <video 
-                className="absolute top-0 left-0 w-full h-full object-cover hidden"
-                src="https://cdn.pixabay.com/video/2018/11/10/19260-300109088_tiny.mp4"
-                muted
-                playsInline
-                loading="lazy"
-                onEnded={(e) => {
-                  e.target.style.display = 'none';
-                  const nextVideo = e.target.nextElementSibling;
-                  if (nextVideo) {
-                    nextVideo.style.display = 'block';
-                    nextVideo.play();
-                  }
-                }}
-              />
+
               <video 
                 className="absolute top-0 left-0 w-full h-full object-cover hidden"
                 src="https://cdn.pixabay.com/video/2024/12/31/249830_tiny.mp4"

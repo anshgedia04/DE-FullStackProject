@@ -25,7 +25,7 @@ export const send_otp = async (email_data) => {
 
 // signup handler
 export const sign_up = async (sign_up_data , navigate) => {
-    
+    const toast_id = toast.loading('please wait...');
     try {
         const responce = await post_data_fetch( `${backendUrl}/api/v1/signup` , sign_up_data);
         if(responce.success === true){
@@ -40,6 +40,9 @@ export const sign_up = async (sign_up_data , navigate) => {
     catch(error){
         toast.error('failed signing up ');
         console.log('error in sign_up function' , error.message);
+    }
+    finally{
+        toast.dismiss(toast_id);
     }
 }
 
@@ -66,7 +69,9 @@ export const login = async (login_data ,dispatch, navigate) => {
         toast.error('failed login ');
         console.log('error in sign_up function' , error.message);
     }
-    toast.dismiss(toast_id);
+    finally {
+        toast.dismiss(toast_id);
+    }
 }
 
 
