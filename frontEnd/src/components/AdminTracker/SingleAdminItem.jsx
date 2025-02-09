@@ -70,32 +70,18 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
 
         {/* Right Side - Actions */}
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <select
-              onChange={(e) => {
-                const selectedAction = statusActions[order.status].find((action) => action.name.includes(e.target.value));
-                if (selectedAction) selectedAction({ orderId: order._id }).then(onStatusChange);
-              }}
-              className="min-w-[140px] border border-gray-600 rounded-lg px-4 py-2 bg-gray-800 text-sm text-white shadow-sm focus:outline-none hover:bg-gray-750 appearance-none cursor-pointer"
-              style={{
-                WebkitAppearance: 'menulist',
-                MozAppearance: 'menulist',
-                appearance: 'menulist'
-              }}
-            >
-              <option value="" className="bg-gray-800">Update Status</option>
-              {statusActions[order.status].map((action, index) => (
-                <option 
-                  key={index} 
-                  value={action.name} 
-                  className="bg-gray-800 text-white"
-                >
-                  {action.name.replace("mark", "").charAt(0).toUpperCase() + 
-                   action.name.replace("mark", "").slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            onChange={(e) => {
+              const selectedAction = statusActions[order.status].find((action) => action.name.includes(e.target.value));
+              if (selectedAction) selectedAction({ orderId: order._id }).then(onStatusChange);
+            }}
+            className="min-w-[140px] border border-gray-600 rounded-lg px-4 py-2 bg-gray-800 text-sm text-white shadow-sm focus:outline-none hover:bg-gray-750"
+          >
+            <option value="">Update Status</option>
+            {statusActions[order.status].map((action, index) => (
+              <option key={index} value={action.name}>{action.name.replace("mark", "")}</option>
+            ))}
+          </select>
           <button
             onClick={handleSeeDetails}
             disabled={loading}
