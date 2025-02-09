@@ -77,9 +77,16 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
             }}
             className="min-w-[140px] border border-gray-600 rounded-lg px-4 py-2 bg-gray-800 text-sm text-white shadow-sm focus:outline-none hover:bg-gray-750"
           >
-            <option value="">Update Status</option>
+            <option value="" className="bg-gray-800">Change to</option>
             {statusActions[order.status].map((action, index) => (
-              <option key={index} value={action.name}>{action.name.replace("mark", "")}</option>
+              <option 
+                key={index} 
+                value={action.name} 
+                className="bg-gray-800 text-white py-2"
+              >
+                {action.name.replace("mark", "").charAt(0).toUpperCase() + 
+                 action.name.replace("mark", "").slice(1)}
+              </option>
             ))}
           </select>
           <button
