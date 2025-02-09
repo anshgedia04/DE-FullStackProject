@@ -93,7 +93,7 @@ const Navbar = () => {
                   <img
                     src={user.image}
                     alt="Profile"
-                    className="w-9 h-9 rounded-full object-cover border-2 border-white"
+                    className="w-9 h-9 rounded-full object-cover border-2 border-white"  //user image size update
                   />
                 )}
               </NavLink>
