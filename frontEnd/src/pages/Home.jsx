@@ -145,27 +145,26 @@ const Home = () => {
 
       {/* Footer Section */}
       <footer className="bg-gray-900 text-white mt-16">
-        <div className="max-w-6xl mx-auto px-4 py-10">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="max-w-6xl mx-auto px-4 py-8 md:py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {/* Company Info */}
-            <div>
-              <h3 className="text-xl font-bold mb-4">Shopping Cart</h3>
+            <div className="text-center sm:text-left">
+              <h3 className="text-xl font-bold mb-3 md:mb-4">Shopping Cart</h3>
               <p className="text-gray-400">Your one-stop destination for premium products and amazing deals.</p>
             </div>
             
             {/* Quick Links */}
-            <div>
-              <h3 className="text-xl font-bold mb-4">Quick Links</h3>
+            <div className="text-center sm:text-left">
+              <h3 className="text-xl font-bold mb-3 md:mb-4">Quick Links</h3>
               <ul className="space-y-2">
-          
                 <li><a href="/aboutus" className="text-gray-400 hover:text-white transition">About Us</a></li>
                 <li><a href="/contactus" className="text-gray-400 hover:text-white transition">Contact</a></li>
               </ul>
             </div>
             
             {/* Contact Info */}
-            <div>
-              <h3 className="text-xl font-bold mb-4">Contact Us</h3>
+            <div className="text-center sm:text-left">
+              <h3 className="text-xl font-bold mb-3 md:mb-4">Contact Us</h3>
               <ul className="text-gray-400 space-y-2">
                 <li>Email: info@shoppingcart.com</li>
                 <li>Phone: +1 234 567 890</li>
@@ -174,16 +173,16 @@ const Home = () => {
             </div>
             
             {/* Newsletter */}
-            <div>
-              <h3 className="text-xl font-bold mb-4">Newsletter</h3>
+            <div className="text-center sm:text-left">
+              <h3 className="text-xl font-bold mb-3 md:mb-4">Newsletter</h3>
               <p className="text-gray-400 mb-4">Subscribe to get updates on new products and special offers.</p>
-              <div className="flex">
+              <div className="flex max-w-xs mx-auto sm:mx-0">
                 <input 
                   type="email" 
                   placeholder="Enter your email" 
-                  className="bg-gray-800 text-white px-4 py-2 rounded-l focus:outline-none"
+                  className="bg-gray-800 text-white px-4 py-2 rounded-l focus:outline-none w-full"
                 />
-                <button className="bg-purple-600 px-4 py-2 rounded-r hover:bg-purple-700 transition">
+                <button className="bg-purple-600 px-4 py-2 rounded-r hover:bg-purple-700 transition whitespace-nowrap">
                   Subscribe
                 </button>
               </div>
@@ -191,7 +190,7 @@ const Home = () => {
           </div>
           
           {/* Bottom Bar */}
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-gray-400">
             <p>&copy; 2024 blue diamonds . All rights reserved.</p>
           </div>
         </div>
