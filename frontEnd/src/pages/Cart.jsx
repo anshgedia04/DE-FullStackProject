@@ -71,7 +71,7 @@ const Cart = () => {
                     hover:bg-green-700 transition-all duration-200 transform hover:scale-[1.02]
                     focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                   >
-                    Checkout Now
+                    Order Now
                   </button>
                 </div>
               </div>
@@ -81,7 +81,7 @@ const Cart = () => {
       ) : (
         <div className="flex flex-col items-center justify-center min-h-[60vh] px-4">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            <h1 className="text-2xl font-bold text-white mb-4">
               Your cart is empty!
             </h1>
             <Link to="/">

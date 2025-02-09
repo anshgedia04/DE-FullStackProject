@@ -75,7 +75,7 @@ const Navbar = () => {
           }
 
           {/* Mobile Right Section (Cart, Profile, Menu) */}
-          <div className="flex items-center space-x-4 md:hidden">
+          <div className="flex items-center gap-2 space-x-4 md:hidden">
             {token !== null && user.accountType === "User" && (
               <NavLink to="/cart" className="relative">
                 <FaShoppingCart className="text-2xl text-white hover:text-green-500" />
@@ -93,7 +93,7 @@ const Navbar = () => {
                   <img
                     src={user.image}
                     alt="Profile"
-                    className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                    className="w-9 h-9 rounded-full object-cover border-2 border-white"
                   />
                 )}
               </NavLink>
