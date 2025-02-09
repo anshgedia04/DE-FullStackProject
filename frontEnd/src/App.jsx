@@ -15,7 +15,7 @@ import ClientDelivered from "./components/Tracker/ClientDelivered";
 import AdminPending from "./components/AdminTracker/AdminPending";
 import AdminDispatch from "./components/AdminTracker/AdminDispatch";
 import AdminDelivered from "./components/AdminTracker/AdminDelivered";
-
+import Profile from "./components/Profile";
 
 
 const App = () => {
@@ -31,6 +31,7 @@ const App = () => {
           <Route path="/cart" element={<Cart/>} />
           <Route path="/login" element={<Login></Login>} />
           <Route path="/contactus" element={<Contact></Contact>} />
+          <Route path="/profile" element={<Profile></Profile>} />
           <Route path="/aboutus" element={<About></About>} /> 
           <Route path="/signup" element={<SignUp></SignUp>} />
           <Route path="/forgot-password" element={<Forgotpass></Forgotpass>} /> 

@@ -107,9 +107,9 @@ const Navbar = () => {
               )}
             </div>
             }
-            
 
-            {/* Profile Image */}
+          {/* Profile Image */} 
+            <NavLink to="/profile">
             {token !== null && user?.image && (
               <img
                 src={user.image}
@@ -117,6 +117,9 @@ const Navbar = () => {
                 className="w-10 h-10 rounded-full object-cover border-2 border-white"
               />
             )}
+            </NavLink>
+
+
 
             {/* Auth Buttons */}
             {token == null ? (
