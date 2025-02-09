@@ -49,7 +49,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="bg-gray-900 text-white border border-gray-700 rounded-xl p-6 shadow-lg"
+      className="bg-gray-900 text-white border border-gray-700 rounded-xl p-6 shadow-lg relative"
     >
       {/* Top Section - Order ID, Status, and Actions */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -183,12 +183,6 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
             </div>
           </div>
         </motion.div>
-      )}
-
-      {loading && (
-        <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center rounded-xl">
-          <div className="w-8 h-8 border-3 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-        </div>
       )}
     </motion.div>
   );

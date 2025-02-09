@@ -9,7 +9,6 @@ export const send_otp = async (email_data) => {
     const toast_id = toast.loading('sending OTP...');
     try{
         const responce = await post_data_fetch(`${backendUrl}/api/v1/sendotp` , email_data);
-        console.log("otp responce : " , responce);
         if(responce.success === true){
             toast.success('OTP sent successfully');
         }
@@ -29,7 +28,6 @@ export const sign_up = async (sign_up_data , navigate) => {
     
     try {
         const responce = await post_data_fetch( `${backendUrl}/api/v1/signup` , sign_up_data);
-        console.log("signup : " , responce);
         if(responce.success === true){
             toast.success('signed up successfully');
             navigate('/login');
@@ -47,10 +45,9 @@ export const sign_up = async (sign_up_data , navigate) => {
 
 // login handler
 export const login = async (login_data ,dispatch, navigate) => {
-    
+    const toast_id = toast.loading('please wait...');
     try{
         const responce = await post_data_fetch( `${backendUrl}/api/v1/login`, login_data);
-        console.log("login responce : ", responce);
         if(responce.success === true){
             toast.success('logged in successfully');
 
@@ -66,10 +63,12 @@ export const login = async (login_data ,dispatch, navigate) => {
         }
     }
     catch(error){
-        toast.error('failed login before');
+        toast.error('failed login ');
         console.log('error in sign_up function' , error.message);
     }
+    toast.dismiss(toast_id);
 }
+
 
 // logout handler
 export const logout = (navigate , dispatch) => {
@@ -88,7 +87,6 @@ export const forgot_password = async (email_data , navigate) => {
     const toast_id = toast.loading('please wait...');
     try{
         const responce = await post_data_fetch( `${backendUrl}/api/v1/resetpassword` , email_data);
-        console.log('forgot pass responce  : ' , responce);
         if(responce.success === true){
             toast.success('password is sended on your email');
             navigate('/login');

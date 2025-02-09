@@ -1,7 +1,6 @@
 
 export const post_data_fetch = async (url, data) => {
     const token = localStorage.getItem("token");
-    console.log("token :",token);
     const responce = await fetch(url, {
         method: 'POST',
         headers: {

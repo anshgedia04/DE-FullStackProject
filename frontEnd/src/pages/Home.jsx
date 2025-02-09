@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState, useEffect } from "react";
 import Spinner from "../components/Spinner";
 import Product from "../components/Product";
 import { products } from "../data";
@@ -8,6 +8,24 @@ const Home = () => {
   
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState(products);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show button when user scrolls down 300px
+      setShowScrollButton(window.scrollY > 300);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
   return (
     <div>
@@ -33,8 +51,68 @@ const Home = () => {
             </button>
           </div>
           <div className="md:w-1/2 hidden md:block">
-            {/* You can add an image here */}
-            <div className="w-full h-64 bg-gray-800/50 rounded-lg backdrop-blur-sm border border-gray-700"></div>
+            <div className="video-container relative h-[400px] overflow-hidden">
+              <video 
+                className="absolute top-0 left-0 w-full h-full object-cover"
+                src="https://cdn.pixabay.com/video/2016/05/12/3121-166335819_large.mp4"
+                autoPlay
+                muted
+                playsInline
+                loading="lazy"
+                onEnded={(e) => {
+                  e.target.style.display = 'none';
+                  const nextVideo = e.target.nextElementSibling;
+                  if (nextVideo) {
+                    nextVideo.style.display = 'block';
+                    nextVideo.play();
+                  }
+                }}
+              />
+              <video 
+                className="absolute top-0 left-0 w-full h-full object-cover hidden"
+                src="https://cdn.pixabay.com/video/2018/11/10/19260-300109088_tiny.mp4"
+                muted
+                playsInline
+                loading="lazy"
+                onEnded={(e) => {
+                  e.target.style.display = 'none';
+                  const nextVideo = e.target.nextElementSibling;
+                  if (nextVideo) {
+                    nextVideo.style.display = 'block';
+                    nextVideo.play();
+                  }
+                }}
+              />
+              <video 
+                className="absolute top-0 left-0 w-full h-full object-cover hidden"
+                src="https://cdn.pixabay.com/video/2024/12/31/249830_tiny.mp4"
+                muted
+                playsInline
+                loading="lazy"
+                onEnded={(e) => {
+                  e.target.style.display = 'none';
+                  const nextVideo = e.target.nextElementSibling;
+                  if (nextVideo) {
+                    nextVideo.style.display = 'block';
+                    nextVideo.play();
+                  }
+                }}
+              />
+              <video 
+                className="absolute top-0 left-0 w-full h-full object-cover hidden"
+                src="https://cdn.pixabay.com/video/2016/05/12/3124-166335839_tiny.mp4"
+                muted
+                playsInline
+                loading="lazy"
+                onEnded={(e) => {
+                  e.target.style.display = 'none';
+                  // When last video ends, show first video again
+                  const firstVideo = e.target.parentElement.firstElementChild;
+                  firstVideo.style.display = 'block';
+                  firstVideo.play();
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -54,6 +132,30 @@ const Home = () => {
           <p>No Data Found</p>
         </div> 
       }
+
+      {/* Scroll to Top Button */}
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-8 right-8 bg-purple-600 text-white p-3 rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300 z-50"
+          aria-label="Scroll to top"
+        >
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-6 w-6" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M5 10l7-7m0 0l7 7m-7-7v18" 
+            />
+          </svg>
+        </button>
+      )}
 
       {/* Footer Section */}
       <footer className="bg-gray-900 text-white mt-16">

@@ -76,7 +76,6 @@ export default function Profile() {
       await updateUserProfile(newData);
       setEditMode(false);
       fetchUserDetails();
-      toast.success("Profile updated successfully!");
     } catch (error) {
       toast.error("Failed to update profile");
     } finally {

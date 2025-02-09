@@ -6,7 +6,6 @@ export const orderDelete = async (orderId) => {
     const toast_id = toast.loading('deleting Your Message...');
     try {
         const responce = await post_data_fetch( `${backendUrl}/api/v1/deleteOrder` , orderId) ;
-        console.log(responce);
         if (responce.success === true) {
             toast.success(responce.message);
         } else {

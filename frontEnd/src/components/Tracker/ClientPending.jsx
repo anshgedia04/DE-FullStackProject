@@ -17,7 +17,6 @@ function ClientPending() {
     try {
       const response = await get_data(`${backendUrl}/api/v1/getPendingReviewed/${userId}`);
       const orderItems = response.data; 
-      console.log(orderItems);
       setOrderGroup(orderItems);
     } catch (error) {
       console.error("Error fetching pending orders:", error.message);

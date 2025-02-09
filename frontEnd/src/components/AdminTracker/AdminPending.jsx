@@ -14,7 +14,6 @@ function AdminPending() {
       const response = await get_data(`${backendUrl}/api/v1/adminPending`);
       const orderItems = response.data;
       setOrderGroup(orderItems);
-      console.log('Fetched Orders:', orderItems);
     } catch (error) {
       console.error('Error fetching pending orders:', error.message);
     } finally {

@@ -6,7 +6,6 @@ export const orderCreate = async (order_data) => {
     const toast_id = toast.loading('sending Your Message...');
     try {
         const responce = await post_data_fetch( `${backendUrl}/api/v1/createOrder` , order_data) ;
-        console.log(responce);
         if (responce.success === true) {
             toast.success(responce.message);
         } else {
