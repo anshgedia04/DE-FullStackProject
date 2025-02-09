@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { orderDelete } from "../../services/orderService/orderDelete";
 import { useSelector } from "react-redux";
 import { markDelivered, markDispatched, markPending, markReviewed } from "../../services/orderService/mark";
@@ -9,6 +9,20 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { user } = useSelector((state) => state.auth);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleSeeDetails = () => {
     setLoading(true);
@@ -45,7 +59,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
   };
 
   return (
-    <motion.div
+    <motion.div 
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
@@ -57,9 +71,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
             <span className="text-sm text-gray-400">Status</span>
-            <span
-              className={`${statusColors[order.status]} px-3 py-1 rounded-md text-sm font-medium mt-1`}
-            >
+            <span className={`${statusColors[order.status]} px-3 py-1 rounded-md text-sm font-medium mt-1`}>
               {order.status}
             </span>
           </div>
@@ -72,22 +84,72 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
 
         {/* Right Side - Actions */}
         <div className="flex items-center gap-3">
-          <select
-            onChange={(e) => {
-              const selectedAction = statusActions[order.status].find((action) =>
-                action.name.includes(e.target.value)
-              );
-              if (selectedAction) selectedAction({ orderId: order._id }).then(onStatusChange);
-            }}
-            className="min-w-[140px] border border-gray-600 rounded-lg px-4 py-2 bg-gray-800 text-sm text-white shadow-sm focus:outline-none hover:bg-gray-750"
-          >
-            <option value="">Update Status</option>
-            {statusActions[order.status].map((action, index) => (
-              <option key={index} value={action.name}>
-                {action.name.replace("mark", "")}
-              </option>
-            ))}
-          </select>
+          {/* Desktop View - Dropdown */}
+          <div className="hidden md:block relative" ref={dropdownRef}>
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+            >
+              Update Status
+            </button>
+
+            {showDropdown && (
+              <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg z-50">
+                {statusActions[order.status].map((action, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      action({ orderId: order._id }).then(onStatusChange);
+                      setShowDropdown(false);
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg"
+                  >
+                    {action.name.replace("mark", "")}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile View - Single Update Status Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setShowStatusModal(true)}
+              className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+            >
+              Update Status
+            </button>
+
+            {/* Mobile Status Modal */}
+            {showStatusModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-gray-800 rounded-lg p-4 w-[90%] max-w-sm">
+                  <h3 className="text-lg font-medium mb-4">Update Status</h3>
+                  <div className="flex flex-col gap-2">
+                    {statusActions[order.status].map((action, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          action({ orderId: order._id }).then(onStatusChange);
+                          setShowStatusModal(false);
+                        }}
+                        className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition text-left"
+                      >
+                        {action.name.replace("mark", "")}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setShowStatusModal(false)}
+                    className="w-full mt-4 px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
             onClick={handleSeeDetails}
             disabled={loading}
@@ -99,7 +161,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
                 Loading...
               </>
             ) : (
-              showDetails ? "Hide Details" : "View Details"
+              showDetails ? 'Hide Details' : 'View Details'
             )}
           </button>
         </div>
@@ -124,6 +186,72 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
           <span className="font-medium">{new Date(order.createdAt).toLocaleDateString()}</span>
         </div>
       </div>
+
+      {/* Expandable Details */}
+      {showDetails && (
+        <motion.div 
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+          className="space-y-6"
+        >
+          {/* Order Items */}
+          <div>
+            <h4 className="text-lg font-medium mb-4">Order Items</h4>
+            <div className="space-y-3">
+              {order.items.map((item, index) => (
+                <div 
+                  key={index} 
+                  className="flex items-center justify-between p-4 bg-gray-800 rounded-lg"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
+                      <span className="text-lg font-semibold">{item.quantity}x</span>
+                    </div>
+                    <div>
+                      <p className="font-medium">{item.title}</p>
+                      <p className="text-sm text-gray-400">${item.price} per item</p>
+                    </div>
+                  </div>
+                  <p className="font-medium text-lg">${item.price * item.quantity}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Shipping Details */}
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="p-4 bg-gray-800 rounded-lg">
+              <h4 className="text-lg font-medium mb-4">Delivery Details</h4>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-gray-400">Address</p>
+                  <p className="font-medium mt-1">{order.address}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-400">Email</p>
+                  <p className="font-medium mt-1">{order.email}</p>
+                </div>
+              </div>
+            </div>
+            <div className="p-4 bg-gray-800 rounded-lg flex flex-col justify-between">
+              <div>
+                <h4 className="text-lg font-medium mb-4">Actions</h4>
+                <p className="text-sm text-gray-400 mb-4">
+                  Manage this order or remove it from the system
+                </p>
+              </div>
+              <button
+                onClick={deleteSingleOrder}
+                disabled={isDeleting}
+                className="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50"
+              >
+                {isDeleting ? "Deleting..." : "Delete Order"}
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
