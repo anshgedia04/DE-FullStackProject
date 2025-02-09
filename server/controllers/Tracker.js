@@ -38,7 +38,7 @@ exports.get_dispatch= async (req , res) => {
     } catch (error) {
         return res.send({
             success:false,
-            message: "dispatch items fetched unsuccessfully "
+            message: "dispatch items fetched unsuccessfull"
         })
     }
 }
@@ -59,7 +59,7 @@ exports.get_delivered = async (req , res) => {
     } catch (error) {
         return res.send({
             success:false,
-            message: "delivered items fetched unsuccessfully "
+            message: "delivered items fetched unsuccessfull"
         })
     }
 }

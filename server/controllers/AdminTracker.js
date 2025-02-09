@@ -65,7 +65,7 @@ exports.mark_reviewed = async (req, res) => {
     const { orderId } = req.body;
 
     if (!orderId) {
-      return res.status(400).json({ message: "Order ID is required" });
+      return res.status(400).json({   success:false,message: "Order ID is required" });
     }
 
     // Update the order item status to 'reviewed'
@@ -76,7 +76,7 @@ exports.mark_reviewed = async (req, res) => {
     );
 
     if (!updatedOrder) {
-      return res.status(404).json({ message: "Order item not found" });
+      return res.status(404).json({  success:false, message: "Order item not found" });
     }
 
     res.status(200).json({
@@ -85,7 +85,7 @@ exports.mark_reviewed = async (req, res) => {
         order: updatedOrder });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({  success:false, message: "Internal server error" });
   }
 };
 
@@ -94,7 +94,7 @@ exports.mark_Dispatched = async (req, res) => {
       const { orderId } = req.body;
   
       if (!orderId) {
-        return res.status(400).json({ message: "Order ID is required" });
+        return res.status(400).json({  success:false, message: "Order ID is required" });
       }
   
       // Update the order item status to 'reviewed'
@@ -105,7 +105,7 @@ exports.mark_Dispatched = async (req, res) => {
       );
   
       if (!updatedOrder) {
-        return res.status(404).json({ message: "Order item not found" });
+        return res.status(404).json({   success:false,message: "Order item not found" });
       }
   
       res.status(200).json({
@@ -114,7 +114,7 @@ exports.mark_Dispatched = async (req, res) => {
           order: updatedOrder });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({success:false, message: "Internal server error" });
     }
   };
 
@@ -123,7 +123,7 @@ exports.mark_Dispatched = async (req, res) => {
       const { orderId } = req.body;
   
       if (!orderId) {
-        return res.status(400).json({ message: "Order ID is required" });
+        return res.status(400).json({success:false, message: "Order ID is required" });
       }
   
       // Update the order item status to 'reviewed'
@@ -134,7 +134,7 @@ exports.mark_Dispatched = async (req, res) => {
       );
   
       if (!updatedOrder) {
-        return res.status(404).json({ message: "Order item not found" });
+        return res.status(404).json({success:false, message: "Order item not found" });
       }
   
       res.status(200).json({
@@ -143,7 +143,7 @@ exports.mark_Dispatched = async (req, res) => {
           order: updatedOrder });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({success:false, message: "Internal server error" });
     }
   };
 
@@ -153,7 +153,7 @@ exports.mark_Dispatched = async (req, res) => {
       const { orderId } = req.body;
   
       if (!orderId) {
-        return res.status(400).json({ message: "Order ID is required" });
+        return res.status(400).json({success:false, message: "Order ID is required" });
       }
   
       // Update the order item status to 'reviewed'
@@ -164,7 +164,7 @@ exports.mark_Dispatched = async (req, res) => {
       );
   
       if (!updatedOrder) {
-        return res.status(404).json({ message: "Order item not found" });
+        return res.status(404).json({success:false, message: "Order item not found" });
       }
   
       res.status(200).json({
@@ -173,6 +173,6 @@ exports.mark_Dispatched = async (req, res) => {
           order: updatedOrder });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({success:false, message: "Internal server error" });
     }
   };
