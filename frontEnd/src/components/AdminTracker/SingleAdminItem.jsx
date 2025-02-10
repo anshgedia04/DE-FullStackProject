@@ -135,7 +135,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
                         }}
                         className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition text-left"
                       >
-                        {action.name.replace("mark", "")}
+                        {action.name}
                       </button>
                     ))}
                   </div>
