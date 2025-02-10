@@ -11,6 +11,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
   const { user } = useSelector((state) => state.auth);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
+  const [showMobileStatusModal, setShowMobileStatusModal] = useState(false);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -83,6 +84,54 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
 
         {/* Right Side - Actions */}
         <div className="flex items-center gap-3">
+          {/* Mobile View - Status Update */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setShowMobileStatusModal(true)}
+              className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+            >
+              Update Status
+            </button>
+
+            {showMobileStatusModal && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+                onClick={() => setShowMobileStatusModal(false)}
+              >
+                <motion.div 
+                  initial={{ scale: 0.95 }}
+                  animate={{ scale: 1 }}
+                  className="bg-gray-800 rounded-xl p-4 w-full max-w-sm"
+                  onClick={e => e.stopPropagation()}
+                >
+                  <h3 className="text-lg font-medium mb-4">Update Order Status</h3>
+                  <div className="space-y-2">
+                    {statusActions[order.status].map((action, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          action({ orderId: order._id }).then(onStatusChange);
+                          setShowMobileStatusModal(false);
+                        }}
+                        className="w-full px-4 py-3 bg-gray-700 text-left text-sm hover:bg-gray-600 rounded-lg transition"
+                      >
+                        {action.name}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => setShowMobileStatusModal(false)}
+                    className="w-full mt-4 px-4 py-3 bg-gray-700 text-sm rounded-lg hover:bg-gray-600 transition"
+                  >
+                    Cancel
+                  </button>
+                </motion.div>
+              </motion.div>
+            )}
+          </div>
+
           {/* Desktop View - Dropdown */}
           <div className="hidden md:block relative" ref={dropdownRef}>
             <button
@@ -108,19 +157,6 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
                 ))}
               </div>
             )}
-          </div>
-
-          {/* Mobile View - Status Buttons */}
-          <div className="md:hidden flex gap-2">
-            {statusActions[order.status].map((action, index) => (
-              <button
-                key={index}
-                onClick={() => action({ orderId: order._id }).then(onStatusChange)}
-                className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
-              >
-                {action.name.replace("mark", "")}
-              </button>
-            ))}
           </div>
 
           <button
