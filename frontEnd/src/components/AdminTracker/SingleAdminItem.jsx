@@ -5,57 +5,102 @@ import { markDelivered, markDispatched, markPending, markReviewed } from "../../
 import { motion } from "framer-motion";
 
 const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
-  const [loading, setLoading] = useState(false);
-  const [showDetails, setShowDetails] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const { user } = useSelector((state) => state.auth);
-  const [showDropdown, setShowDropdown] = useState(false);
+  // Simplified state management
+  const [uiState, setUiState] = useState({
+    isLoading: false,
+    isDetailsVisible: false,
+    isDeleting: false,
+    isStatusModalOpen: false,
+    isDropdownOpen: false
+  });
+  
   const dropdownRef = useRef(null);
-  const [showMobileStatusModal, setShowMobileStatusModal] = useState(false);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
+  // Status transition map - defines valid status transitions
+  const statusTransitions = {
+    pending: { next: 'reviewed', alternate: 'dispatched' },
+    reviewed: { next: 'dispatched', alternate: 'pending' },
+    dispatched: { next: 'delivered', alternate: 'reviewed' },
+    delivered: { next: 'reviewed', alternate: 'dispatched' }
+  };
+
+  // Status action map - maps status transitions to API calls
+  const getStatusActions = (currentStatus) => {
+    const transitions = statusTransitions[currentStatus];
+    return [
+      { label: transitions.next, action: getMarkFunction(transitions.next) },
+      { label: transitions.alternate, action: getMarkFunction(transitions.alternate) }
+    ];
+  };
+
+  // Helper to get the appropriate mark function
+  const getMarkFunction = (status) => {
+    const markFunctions = {
+      pending: markPending,
+      reviewed: markReviewed,
+      dispatched: markDispatched,
+      delivered: markDelivered
+    };
+    return markFunctions[status];
+  };
+
+  // Unified state update function
+  const updateUiState = (updates) => {
+    setUiState(prev => ({ ...prev, ...updates }));
+  };
+
+  // Handle status change
+  const handleStatusChange = async (actionFn) => {
+    try {
+      await actionFn({ orderId: order._id });
+      await onStatusChange();
+      updateUiState({ isStatusModalOpen: false, isDropdownOpen: false });
+    } catch (error) {
+      console.error("Error updating status:", error);
     }
+  };
+
+  // Handle order deletion
+  const handleDeleteOrder = async () => {
+    updateUiState({ isDeleting: true });
+    try {
+      await orderDelete({ userId: order.userId, orderId: order._id });
+      await onDelete();
+    } catch (error) {
+      console.error("Error deleting order:", error);
+    } finally {
+      updateUiState({ isDeleting: false });
+    }
+  };
+
+  // Handle details toggle with loading simulation
+  const handleDetailsToggle = () => {
+    updateUiState({ isLoading: true });
+    setTimeout(() => {
+      updateUiState({
+        isLoading: false,
+        isDetailsVisible: !uiState.isDetailsVisible
+      });
+    }, 1000);
+  };
+
+  // Click outside handler for dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        updateUiState({ isDropdownOpen: false });
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
-  const handleSeeDetails = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setShowDetails(!showDetails);
-    }, 1000);
-  };
 
   const statusColors = {
     pending: "bg-red-600 text-white",
     reviewed: "bg-yellow-500 text-white",
     dispatched: "bg-blue-500 text-white",
     delivered: "bg-green-500 text-white",
-  };
-
-  const deleteSingleOrder = async () => {
-    setIsDeleting(true);
-    try {
-      await orderDelete({ userId: order.userId, orderId: order._id });
-      onDelete();
-    } catch (error) {
-      console.error("Error deleting order:", error);
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
-  const statusActions = {
-    pending: [markReviewed, markDispatched],
-    reviewed: [markPending, markDispatched],
-    dispatched: [markReviewed, markDelivered],
-    delivered: [markReviewed, markDispatched],
   };
 
   return (
@@ -84,93 +129,82 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
 
         {/* Right Side - Actions */}
         <div className="flex items-center gap-3">
-          {/* Mobile View - Status Update */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setShowMobileStatusModal(true)}
-              className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
-            >
-              Update Status
-            </button>
-
-            {showMobileStatusModal && (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
-                onClick={() => setShowMobileStatusModal(false)}
-              >
-                <motion.div 
-                  initial={{ scale: 0.95 }}
-                  animate={{ scale: 1 }}
-                  className="bg-gray-800 rounded-xl p-4 w-full max-w-sm"
-                  onClick={e => e.stopPropagation()}
-                >
-                  <h3 className="text-lg font-medium mb-4">Update Order Status</h3>
-                  <div className="space-y-2">
-                    {statusActions[order.status].map((action, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          action({ orderId: order._id }).then(onStatusChange);
-                          setShowMobileStatusModal(false);
-                        }}
-                        className="w-full px-4 py-3 bg-gray-700 text-left text-sm hover:bg-gray-600 rounded-lg transition"
-                      >
-                        {action.name}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => setShowMobileStatusModal(false)}
-                    className="w-full mt-4 px-4 py-3 bg-gray-700 text-sm rounded-lg hover:bg-gray-600 transition"
-                  >
-                    Cancel
-                  </button>
-                </motion.div>
-              </motion.div>
-            )}
-          </div>
-
           {/* Desktop View - Dropdown */}
           <div className="hidden md:block relative" ref={dropdownRef}>
             <button
-              onClick={() => setShowDropdown(!showDropdown)}
+              onClick={() => updateUiState({ isDropdownOpen: !uiState.isDropdownOpen })}
               className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
             >
               Update Status
             </button>
 
-            {showDropdown && (
+            {uiState.isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg z-50">
-                {statusActions[order.status].map((action, index) => (
+                {getStatusActions(order.status).map((action, index) => (
                   <button
                     key={index}
                     onClick={() => {
-                      action({ orderId: order._id }).then(onStatusChange);
-                      setShowDropdown(false);
+                      handleStatusChange(action.action);
                     }}
                     className="w-full px-4 py-2 text-left text-sm hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg"
                   >
-                    {action.name.replace("mark", "")}
+                    {action.label.replace("mark", "")}
                   </button>
                 ))}
               </div>
             )}
           </div>
 
+          {/* Mobile View - Single Update Status Button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => updateUiState({ isStatusModalOpen: true })}
+              className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+            >
+              Update Status
+            </button>
+
+            {/* Mobile Status Modal */}
+            {uiState.isStatusModalOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-gray-800 rounded-lg p-4 w-[90%] max-w-sm">
+                  <h3 className="text-lg font-medium mb-4">Update Status</h3>
+                  <div className="flex flex-col gap-2">
+                    {getStatusActions(order.status).map((action, index) => (
+                      <button
+                        key={index}
+                        onClick={() => {
+                          handleStatusChange(action.action);
+                        }}
+                        className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition text-left"
+                      >
+                        {action.label.replace("mark", "")}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => updateUiState({ isStatusModalOpen: false })}
+                    className="w-full mt-4 px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <button
-            onClick={handleSeeDetails}
-            disabled={loading}
+            onClick={handleDetailsToggle}
+            disabled={uiState.isLoading}
             className="px-4 py-2 bg-purple-600 text-sm font-medium rounded-lg hover:bg-purple-700 transition flex items-center gap-2"
           >
-            {loading ? (
+            {uiState.isLoading ? (
               <>
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 Loading...
               </>
             ) : (
-              showDetails ? 'Hide Details' : 'View Details'
+              uiState.isDetailsVisible ? 'Hide Details' : 'View Details'
             )}
           </button>
         </div>
@@ -197,7 +231,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
       </div>
 
       {/* Expandable Details */}
-      {showDetails && (
+      {uiState.isDetailsVisible && (
         <motion.div 
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -251,11 +285,11 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
                 </p>
               </div>
               <button
-                onClick={deleteSingleOrder}
-                disabled={isDeleting}
+                onClick={handleDeleteOrder}
+                disabled={uiState.isDeleting}
                 className="w-full px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition disabled:opacity-50"
               >
-                {isDeleting ? "Deleting..." : "Delete Order"}
+                {uiState.isDeleting ? "Deleting..." : "Delete Order"}
               </button>
             </div>
           </div>
