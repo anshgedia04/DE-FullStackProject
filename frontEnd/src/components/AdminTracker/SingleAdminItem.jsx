@@ -9,7 +9,6 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { user } = useSelector((state) => state.auth);
-  const [showStatusModal, setShowStatusModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -111,43 +110,17 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
             )}
           </div>
 
-          {/* Mobile View - Single Update Status Button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setShowStatusModal(true)}
-              className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
-            >
-              Update Status
-            </button>
-
-            {/* Mobile Status Modal */}
-            {showStatusModal && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                <div className="bg-gray-800 rounded-lg p-4 w-[90%] max-w-sm">
-                  <h3 className="text-lg font-medium mb-4">Update Status</h3>
-                  <div className="flex flex-col gap-2">
-                    {statusActions[order.status].map((action, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          action({ orderId: order._id }).then(onStatusChange);
-                          setShowStatusModal(false);
-                        }}
-                        className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition text-left"
-                      >
-                        {action.name.replace("mark", "")}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    onClick={() => setShowStatusModal(false)}
-                    className="w-full mt-4 px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
+          {/* Mobile View - Status Buttons */}
+          <div className="md:hidden flex gap-2">
+            {statusActions[order.status].map((action, index) => (
+              <button
+                key={index}
+                onClick={() => action({ orderId: order._id }).then(onStatusChange)}
+                className="px-3 py-2 bg-gray-700 text-sm font-medium rounded-lg hover:bg-gray-600 transition"
+              >
+                {action.name.replace("mark", "")}
+              </button>
+            ))}
           </div>
 
           <button
