@@ -226,7 +226,7 @@ const SingleAdminItem = ({ order, onDelete, onStatusChange }) => {
         </div>
         <div>
           <span className="text-sm text-gray-400 block mb-1">Date</span>
-          <span className="font-medium">{new Date(order.createdAt).toLocaleDateString()}</span>
+          <span className="font-medium">{order.createdAt}</span>
         </div>
       </div>
 
