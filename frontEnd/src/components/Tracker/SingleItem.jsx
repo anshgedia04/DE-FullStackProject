@@ -61,7 +61,7 @@ function SingleItem({ item, onDelete }) {
     doc.setTextColor(60, 60, 60);
     doc.setFontSize(10);
     doc.text(`Order ID: ${item._id}`, 15, 78);
-    doc.text(`Date: ${new Date(item.createdAt).toLocaleDateString()}`, 15, 86);
+    doc.text(`Date: ${item.createdAt}`, 15, 86);
     doc.text(`Status: ${item.status.toUpperCase()}`, 15, 94);
     
     // Add customer details with matching styling
