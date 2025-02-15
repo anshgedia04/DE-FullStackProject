@@ -1,3 +1,3 @@
-// export const backendUrl = 'https://de-fullstackproject.onrender.com'
+export const backendUrl = 'https://de-fullstackproject.onrender.com'
 
-export const backendUrl = 'http://localhost:4000'
+// export const backendUrl = 'http://localhost:4000'
