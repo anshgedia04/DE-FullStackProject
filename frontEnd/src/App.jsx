@@ -16,6 +16,7 @@ import AdminPending from "./components/AdminTracker/AdminPending";
 import AdminDispatch from "./components/AdminTracker/AdminDispatch";
 import AdminDelivered from "./components/AdminTracker/AdminDelivered";
 import Profile from "./components/Profile";
+import Dashboard from "./pages/Dashboard";
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<Home/>} />
+          <Route path="/dashboard" element={<Dashboard/>} />
           <Route path="/cart" element={<Cart/>} />
           <Route path="/login" element={<Login></Login>} />
           <Route path="/contactus" element={<Contact></Contact>} />
